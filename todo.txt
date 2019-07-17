@@ -1,4 +1,15 @@
 make a beautiful form for table
-showProduct should be in an additional file
 CLI no interactive for client, manager, supervisor
+common library
+   - showProduct 1) with inventory
+                 2) no inventory 
+                 3) update department name
+
+   - updateInventory 
+
+Put askManager in each CRUD function
+
+connect to database only once, close when "quit" is selected
+
+
 

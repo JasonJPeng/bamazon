@@ -79,6 +79,13 @@ async function listLow(){
       };
 }
 
+function addInventory(pmt) {
+    inquirer.prompt(pmt).then(ans => {
+        console.log(ans.id, ans.num);   
+        askManager(mgrPrompts);
+    })
+}
+
 function askManager(pmt) {
     inquirer.prompt(pmt).then(async ans => {  // Need to use async 
         switch (ans.choice) {
@@ -89,7 +96,11 @@ function askManager(pmt) {
             case arrChoices[1]: // View low inventory
                 await listLow();
                 await askManager(mgrPrompts);
-                break;                     
+                break; 
+            case arrChoices[2]: // Add to inventory
+                await addInventory(mgrPromptsInv);
+                // await askManager(mgrPrompts);
+                break;                         
             case arrChoices[5]: // Quit
                 return;
         } 

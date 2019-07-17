@@ -36,6 +36,44 @@ var mgrPromptsNew = [
     {message: "Enter the inventory of the product", type: "input", name: "num"}
 ];
 
+//======================================================================
+// Cut and paste from customer . js need to re-organize
+//===============================================================
+
+async function updateProductNum(id, num) {
+    try {
+        let conn = await mysql.createConnection(connectionParams);
+        let [rows,fields] = await conn.query("SELECT * FROM products WHERE item_id = ?", [id]);
+        conn.end();
+        if (rows.length !== 1) {
+            console.log(`${id} is not a valid product Id.`);
+            return 0;
+        } else {
+            var newNum = rows[0].stock_quantity - num;
+            var totalPrice = rows[0].price * num;
+            var productName = rows[0].product_name;
+            if (newNum < 0 ) {
+               console.log("Insufficient quantity!");
+               return 0;
+            } else {
+                try {
+                   let conn = await mysql.createConnection(connectionParams);
+                   let [rows,fields] = await conn.query("UPDATE products SET stock_quantity = ? WHERE item_id = ?",
+                                                         [newNum, id]);
+                    console.log(`You bought ${num} ${productName} !  $${totalPrice} will be deducted from your account`);                                     
+                    conn.end();
+                } catch (err) {
+                    console.log(err);
+                }   
+            }
+        }        
+      } catch (err) {
+        console.log(err);
+        return 0;
+      };
+    }    
+   //======================================================================   
+
 
 // when the program started, print out all products and 
 //  also use push to create a department list -- [allDept]
@@ -81,7 +119,8 @@ async function listLow(){
 
 function addInventory(pmt) {
     inquirer.prompt(pmt).then(ans => {
-        console.log(ans.id, ans.num);   
+
+        updateProductNum(ans.id, ans.num*(-1));
         askManager(mgrPrompts);
     })
 }

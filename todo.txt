@@ -1,0 +1,4 @@
+make a beautiful form for table
+showProduct should be in an additional file
+CLI no interactive for client, manager, supervisor
+

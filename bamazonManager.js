@@ -36,6 +36,7 @@ var mgrPromptsNew = [
     {message: "Enter the inventory of the product", type: "input", name: "num"}
 ];
 
+
 // when the program started, print out all products and 
 //  also use push to create a department list -- [allDept]
 function showProductMgr(arrProducts) {
@@ -64,8 +65,14 @@ async function listLow(){
     try {
         let conn = await mysql.createConnection(connectionParams);
         let [rows,fields] = await conn.query("SELECT * FROM products WHERE stock_quantity < 5");
-        
-      //   console.log(rows);
+        if (rows.length === 0) {
+            console.log("No products are in low inventory");
+        } else {
+            console.log("Low inventory list");  
+            rows.forEach(function (e) {
+                console.log(e.item_id, e.department_name, e.product_name, e.price, e.stock_quantity);
+            })     
+        }
         conn.end();
       } catch (err) {
         console.log(err);

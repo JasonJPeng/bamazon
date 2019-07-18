@@ -12,5 +12,9 @@ Put askManager in each CRUD function
 
 connect to database only once, close when "quit" is selected
 
+bug. need to build department list otherwise you cannot use add new product as the first command.
+
+
+
 
 

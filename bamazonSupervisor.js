@@ -8,14 +8,16 @@ const connectionParams = {
     password: "12345678",
     database: "bamazon"
   };
+  var conn;
 
 const arrChoices = [
     "View Product Sales by Department",  
     "Create a new department",    
-    "Add overhead to a department"    
+    "Add overhead to a department",
+    "Quit"    
 ];
 
-var promptAction = [{ message: "\n\n", type: "rawlist", name: "choice", choices: arrChoices}];
+var promptsAction = [{ message: "\n\n", type: "rawlist", name: "choice", choices: arrChoices}];
 var promptsNew = [ 
     {message: "Enter the department name: ", type: "inpout", name:  "dept"},
     {message: "Enter the department overhead cost: ", type: "input", name: "cost"}
@@ -41,15 +43,66 @@ var strSqlProfit =
 "join departments on departments.department_name = products.department_name " +
 "group by products.department_name order by department_id asc;";
 
-
-
-
-async function supervisor(pmt) {
-    let conn = await mysql.createConnection(connectionParams);
-    let [rows,fields] = await conn.query(strSqlProfit);
-    console.table(rows);
-    
-    conn.end();
+async function createNewDept() {
+    inquirer.prompt(promptsNew).then( async ans=> {
+        try {
+             let res = await conn.query("INSERT INTO departments SET ?", [{
+                         "department_name": ans.dept,
+                         "overhead_costs": ans.cost
+             }])
+             console.log(res);
+             action(promptsAction);
+        } catch (err) {
+             console.log("ERROR: Fail to creatye a new departmrnt");
+             console.log(err);
+             conn.end();
+        }      
+    })    
 }
 
-supervisor(promptAction);
+async function changeOverheadCosts() {
+    inquirer.prompt(promptsNew).then( async ans=> {
+        try {
+          let [rows, fields] = await conn.query(); 
+        } catch (err) {
+           console.log("Fail to change the overhaed costs"); 
+           conslog.log(err);
+           conn.end();
+        }
+    })       
+}
+
+async function action(pmt) {
+    inquirer.prompt(pmt).then( async ans=> {
+        switch (ans.choice) {
+            case arrChoices[0]: // vire profit
+                let [rows,fields] = await conn.query(strSqlProfit);
+                console.table(rows);
+                await action(pmt);
+                break;
+            case arrChoices[1]:  // Create a new department
+                await createNewDept();
+                break;
+            case arrChoices[2]:  // Change Overhead cost
+                await changeOverheadCosts();
+                break;
+            case arrChoices[3]: // Quit   
+                conn.end();
+        }
+    })
+
+}
+
+
+// This function connects to database and call the main program
+async function supervisor(pmt) { 
+  try {
+    conn = await mysql.createConnection(connectionParams);
+    await action(pmt); 
+  } catch(err) {
+        console.log("fail to connect to database");
+        console.log(err);
+  }
+}
+
+supervisor(promptsAction);

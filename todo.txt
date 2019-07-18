@@ -1,5 +1,6 @@
 make a beautiful form for table
 CLI no interactive for client, manager, supervisor
+customer purchase need to update the product sales
 common library
    - showProduct 1) with inventory
                  2) no inventory 
@@ -13,7 +14,7 @@ Put askManager in each CRUD function
 connect to database only once, close when "quit" is selected
 
 bug. need to build department list otherwise you cannot use add new product as the first command.
-
+bug, How about department with no products 
 
 
 

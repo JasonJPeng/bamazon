@@ -8,12 +8,25 @@ const connectionParams = {
     password: "12345678",
     database: "bamazon"
   };
+const arrPrompts = [
+  {message: "Please eneter the product Id:  ", type: 'input', name: 'id'},
+  {message: "Please enter the quantity:  ", type: 'input', name: 'num'}
+];  
 
-function showProducts(arrProducts) {
-    arrProducts.forEach(function (e) {
-      console.log(e.item_id, e.department_name, e.product_name, e.price); 
+var conn;
+
+async function showProducts(arrProducts) {
+  try {
+    let [rows,fields] = await conn.query("SELECT * FROM products");
+    console.table(rows);
+    inquirer.prompt(arrPrompts).then(ans => {
+    updateProductNum(ans.id, ans.num);  
+    conn.end();       
     })
-    
+  } catch(err) {
+    console.log("Fail to list all products");
+    console.log(err);
+  }         
 }  
 
 async function updateProductNum(id, num) {
@@ -67,17 +80,19 @@ function buyProduct() {
     })
 }
 
-async function listAll() {
+async function startProgram () {
     try {
-      let conn = await mysql.createConnection(connectionParams);
-      let [rows,fields] = await conn.query("SELECT * FROM products");
-      showProducts(rows); 
-      buyProduct();
+      conn = await mysql.createConnection(connectionParams);
+      await showProducts();
+      // let [rows,fields] = await conn.query("SELECT * FROM products");
+      // showProducts(rows); 
+      // buyProduct();
     //   console.log(rows);
-      conn.end();
+      // conn.end();
     } catch (err) {
+      console.log("fail to connect to database");
       console.log(err);
     };
   }
 
-listAll();
+startProgram();

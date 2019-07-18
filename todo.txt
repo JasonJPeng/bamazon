@@ -5,7 +5,8 @@ common library
                  2) no inventory 
                  3) update department name
 
-   - updateInventory 
+   - updateInventory - not close the database in manager
+                     - purchase number  negative, message is wrong  
 
 Put askManager in each CRUD function
 

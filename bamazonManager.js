@@ -72,6 +72,19 @@ async function updateProductNum(id, num) {
         return 0;
       };
     }    
+   // update only ONE item, ONE column
+   async function updateProduc(id, obj) {
+        var column = Object.keys(obj)[0];
+        var value =  Object.values(obj)[0];
+        try {
+            let conn = await mysql.createConnection(connectionParams);
+            let [rows,fields] = await conn.query(`UPDATE products SET ${column} = '${value}' WHERE item_id = ${id}`);
+            conn.end();
+            return 1;
+        } catch (err) {    
+            console.log(err);    
+        }   
+    }    
    //======================================================================   
 
 
@@ -125,6 +138,35 @@ function addInventory(pmt) {
     })
 }
 
+function changePrice(pmt) {
+    inquirer.prompt(pmt).then(ans => {
+        updateProduc(ans.id, {"price":ans.price});
+        askManager(mgrPrompts);
+    })
+}
+
+function addProduct(pmt) {
+    inquirer.prompt(pmt).then(async ans => {
+    try {
+        let conn = await mysql.createConnection(connectionParams);
+        let res = await conn.query("INSERT INTO products SET ?", [{
+           "department_name": ans.dept,
+           "product_name": ans.product,
+           "price": ans.price,
+           "stock_quantity": ans.num
+        }]);
+        console.log(res);
+        conn.end();
+        askManager(mgrPrompts);
+         return 1;
+    } catch (err) {    
+        console.log(err);    
+    }    
+        
+    })
+}
+
+
 function askManager(pmt) {
     inquirer.prompt(pmt).then(async ans => {  // Need to use async 
         switch (ans.choice) {
@@ -139,7 +181,15 @@ function askManager(pmt) {
             case arrChoices[2]: // Add to inventory
                 await addInventory(mgrPromptsInv);
                 // await askManager(mgrPrompts);
-                break;                         
+                break;  
+            case arrChoices[3]: // Change Price
+                await changePrice(mgrPromptsPrice);
+                // await askManager(mgrPrompts);
+                break;     
+            case arrChoices[4]: // Add New Product
+                await addProduct(mgrPromptsNew);
+                // await askManager(mgrPrompts);
+                break;                              
             case arrChoices[5]: // Quit
                 return;
         } 

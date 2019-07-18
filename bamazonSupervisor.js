@@ -61,12 +61,14 @@ async function createNewDept() {
 }
 
 async function changeOverheadCosts() {
-    inquirer.prompt(promptsNew).then( async ans=> {
+    inquirer.prompt(promptsChange).then( async ans=> {
         try {
-          let [rows, fields] = await conn.query(); 
+          let res = await conn.query(`UPDATE departments SET overhead_costs = overhead_costs + ${ans.cost} WHERE department_id = ${ans.id} `);
+        console.log(res);
+        action(promptsAction);
         } catch (err) {
            console.log("Fail to change the overhaed costs"); 
-           conslog.log(err);
+           console.log(err);
            conn.end();
         }
     })       
@@ -92,7 +94,6 @@ async function action(pmt) {
     })
 
 }
-
 
 // This function connects to database and call the main program
 async function supervisor(pmt) { 

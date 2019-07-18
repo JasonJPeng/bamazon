@@ -15,14 +15,16 @@ const arrPrompts = [
 
 var conn;
 
+
+
 async function showProducts(arrProducts) {
   try {
     let [rows,fields] = await conn.query("SELECT * FROM products");
     console.table(rows);
-    inquirer.prompt(arrPrompts).then(ans => {
-    updateProductNum(ans.id, ans.num);  
-    conn.end();       
-    })
+    let ans = await inquirer.prompt(arrPrompts)//.then(ans => {
+      await updateProductNum(ans.id, ans.num);  
+      conn.end();       
+  //  })
   } catch(err) {
     console.log("Fail to list all products");
     console.log(err);
@@ -31,7 +33,7 @@ async function showProducts(arrProducts) {
 
 async function updateProductNum(id, num) {
     try {
-        let conn = await mysql.createConnection(connectionParams);
+        // let conn = await mysql.createConnection(connectionParams);
         let [rows,fields] = await conn.query("SELECT * FROM products WHERE item_id = ?", [id]);
         conn.end();
         if (rows.length !== 1) {
@@ -62,33 +64,10 @@ async function updateProductNum(id, num) {
       };
 }
 
-function buyProduct() {
-    arrPrompts = [
-        {
-            message: "Please eneter the product Id:  ",
-            type: 'input',
-            name: 'id'
-        },
-        {
-            message: "Please enter the quantity:  ",
-            type: 'input',
-            name: 'num'
-        }
-    ];
-    inquirer.prompt(arrPrompts).then(ans => {
-        updateProductNum(ans.id, ans.num);         
-    })
-}
-
 async function startProgram () {
     try {
       conn = await mysql.createConnection(connectionParams);
       await showProducts();
-      // let [rows,fields] = await conn.query("SELECT * FROM products");
-      // showProducts(rows); 
-      // buyProduct();
-    //   console.log(rows);
-      // conn.end();
     } catch (err) {
       console.log("fail to connect to database");
       console.log(err);

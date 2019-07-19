@@ -135,7 +135,7 @@ async function addInventory(pmt) {
                                                          [ans.num, ans.id]);  
        console.log("Inventory updated");                                                    
     } catch(err) {
-       console.log("ERROR: Fail to update einventory");
+       console.log("ERROR: Fail to update inventory");
        console.log(err);
     }
 }

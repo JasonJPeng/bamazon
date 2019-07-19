@@ -23,7 +23,6 @@ The following video shows how manager module functions:
 * The manager can also see all products in low inventory (less than 5 in this case.)
 * The manager can add inventory or change prices for the products.
 * The manager can also create new products within a list of departments. The new products will be available to cusomers in real time.
----
 ![Manager Module](./info/bamazon-manager.gif)
 ---
 
@@ -32,7 +31,6 @@ The following video shows how supervisor module functions:
 * The supervisor can add overhead costs for each department.
 * The supervisor can create a new department, which will be available in managers' department pick list when they create new products, which will also be available for customers to purchase.
 * When customers place orders, managers will see the inventory changes and the supervisor would see profit changes in the respective department. 
----
 ![Supervisor Module](./info/bamazon-supervisor.gif)
 ---
 

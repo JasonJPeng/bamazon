@@ -18,6 +18,8 @@ const arrChoices = [
     "Quit"     
 ];
 var conn; // global variable for DB connection
+var allDept = [];
+
 
 var mgrPrompts = [{ message: "\n\n", type: "rawlist", name: "choice", choices: arrChoices}];
 var mgrPromptsInv = [ 
@@ -34,71 +36,6 @@ var mgrPromptsNew = [
     {message: "Enter the price of the product: ", type: "input", name:"price"},
     {message: "Enter the inventory of the product", type: "input", name: "num"}
 ];
-
-//======================================================================
-// Cut and paste from customer . js need to re-organize
-//===============================================================
-
-// async function updateProductNum(id, num) {
-//     try {
-//         let conn = await mysql.createConnection(connectionParams);
-//         let [rows,fields] = await conn.query("SELECT * FROM products WHERE item_id = ?", [id]);
-//         conn.end();
-//         if (rows.length !== 1) {
-//             console.log(`${id} is not a valid product Id.`);
-//             return 0;
-//         } else {
-//             var newNum = rows[0].stock_quantity - num;
-//             var totalPrice = rows[0].price * num;
-//             var productName = rows[0].product_name;
-//             if (newNum < 0 ) {
-//                console.log("Insufficient quantity!");
-//                return 0;
-//             } else {
-//                 try {
-//                    let conn = await mysql.createConnection(connectionParams);
-//                    let [rows,fields] = await conn.query("UPDATE products SET stock_quantity = ? WHERE item_id = ?",
-//                                                          [newNum, id]);
-//                     console.log(`You bought ${num} ${productName} !  $${totalPrice} will be deducted from your account`);                                     
-//                     conn.end();
-//                 } catch (err) {
-//                     console.log(err);
-//                 }   
-//             }
-//         }        
-//       } catch (err) {
-//         console.log(err);
-//         return 0;
-//       };
-//     }    
-   // update only ONE item, ONE column
-   async function updateProduc(id, obj) {
-        var column = Object.keys(obj)[0];
-        var value =  Object.values(obj)[0];
-        try {
-            let conn = await mysql.createConnection(connectionParams);
-            let [rows,fields] = await conn.query(`UPDATE products SET ${column} = '${value}' WHERE item_id = ${id}`);
-            conn.end();
-            return 1;
-        } catch (err) {    
-            console.log(err);    
-        }   
-    }    
-   //======================================================================   
-
-
-// when the program started, print out all products and 
-//  also use push to create a department list -- [allDept]
-
-// function showProductMgr(arrProducts) {
-//     arrProducts.forEach(function (e) {
-//       console.log(e.item_id, e.department_name, e.product_name, e.price, e.stock_quantity); 
-//       if (allDept.indexOf(e.department_name) < 0 ) {
-//           allDept.push(e.department_name);
-//       }
-//     })
-//     // console.log(mgrPromptsNew);    
-// }  
 
 async function listAll(){
     try {
@@ -140,34 +77,34 @@ async function addInventory(pmt) {
     }
 }
 
-function changePrice(pmt) {
-    inquirer.prompt(pmt).then(ans => {
-        updateProduc(ans.id, {"price":ans.price});
-        askManager(mgrPrompts);
-    })
+async function changePrice(pmt) {
+    try {
+       let ans = await inquirer.prompt(pmt);
+       let [rows,fields] = await conn.query("UPDATE products SET price = ? WHERE item_id = ?",
+                                                            [ans.price, ans.id]);
+        console.log("Price chnaged to ${ans.price}");                                                    
+    }  catch (err) {
+        console.log("ERROR: fail to update price...") 
+        console.log(err); 
+    }    
 }
 
-function addProduct(pmt) {
-    inquirer.prompt(pmt).then(async ans => {
+async function addProduct(pmt) {
     try {
-        let conn = await mysql.createConnection(connectionParams);
+        let ans = await inquirer.prompt(pmt);
         let res = await conn.query("INSERT INTO products SET ?", [{
            "department_name": ans.dept,
            "product_name": ans.product,
            "price": ans.price,
            "stock_quantity": ans.num
         }]);
-        console.log(res);
-        conn.end();
-        askManager(mgrPrompts);
-         return 1;
+        // console.log(res);
+        console.log("New product created")
     } catch (err) {    
+        console.log("ERR: Fail to create a new product");
         console.log(err);    
     }    
-        
-    })
 }
-
 
 function askManager(pmt) {
     inquirer.prompt(pmt).then(async ans => {  // Need to use async 
@@ -186,11 +123,11 @@ function askManager(pmt) {
                 break;  
             case arrChoices[3]: // Change Price
                 await changePrice(mgrPromptsPrice);
-                // await askManager(mgrPrompts);
+                askManager(mgrPrompts);
                 break;     
             case arrChoices[4]: // Add New Product
                 await addProduct(mgrPromptsNew);
-                // await askManager(mgrPrompts);
+                askManager(mgrPrompts);
                 break;                              
             case arrChoices[5]: // Quit
                 conn.end();
@@ -199,11 +136,10 @@ function askManager(pmt) {
     })
 }
 
-var allDept = [];
+
 // create allDept []  for all departments
 async function createAllDept() {
-    try {
-      allDept = [];  
+    try { 
       let [rows,fields] = await conn.query("SELECT * FROM departments");
       rows.forEach(function(e){
          allDept.push(e.department_name);

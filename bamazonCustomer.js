@@ -49,7 +49,7 @@ async function updateProductNum(id, num) {
              console.log("Insufficient quantity!");
              return  0;
         }
-        var totalPrice = parseInt(rows[0].price) * num;
+        var totalPrice = parseFloat(rows[0].price) * num;
         var productName = rows[0].product_name;
         var newSales = parseInt(rows[0].product_sales) + totalPrice;
         let res = await conn.query("UPDATE products SET ? WHERE item_id = ?",

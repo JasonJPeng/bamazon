@@ -22,8 +22,7 @@ async function showProducts(arrProducts) {
     let [rows,fields] = await conn.query("SELECT * FROM products");
     console.table(rows);
     let ans = await inquirer.prompt(arrPrompts)//.then(ans => {
-      await updateProductNum(ans.id, ans.num);  
-      conn.end();       
+      await updateProductNum(ans.id, ans.num);         
   //  })
   } catch(err) {
     console.log("Fail to list all products");
@@ -51,7 +50,6 @@ async function updateProductNum(id, num) {
                                                    "product_sales" : newSales 
                                                  }, 
                                                     id]);
-        
         console.log(`You bought ${num} ${productName} !  $${totalPrice} will be deducted from your account`);                                             
       } catch (err) {
         console.log("ERROR: Sales NOT completed")
@@ -59,11 +57,13 @@ async function updateProductNum(id, num) {
         return 0;
       };
 }
-
+// Start and end program
+// This program connects and ends database
 async function startProgram () {
     try {
       conn = await mysql.createConnection(connectionParams);
       await showProducts();
+      conn.end();
     } catch (err) {
       console.log("fail to connect to database");
       console.log(err);

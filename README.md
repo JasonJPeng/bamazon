@@ -35,3 +35,20 @@ The following video shows how supervisor module functions:
 ---
 ![Supervisor Module](./info/bamazon-supervisor.gif)
 ---
+
+## Coding Challenges
+````
+This program has many interactive prompts and SQL function call. Carefully arranging the recursive calls and async functions of SQL calls are the key to keep the code clean and readable.
+````
+
+>> AS-Table Node module is used to format the search results
+
+The follwoing SQL is used to generate department based profit/loss table:
+````SELECT departments.department_id, departments.department_name, departments.overhead_costs, 
+SUM(products.product_sales) AS product_sales, 
+SUM(products.product_sales) - departments.overhead_costs AS total_profit FROM departments 
+JOIN products on departments.department_name = products.department_name
+GROUP BY products.department_name ORDER BY department_id ASC;
+````
+The following shows the SQL, Database Table and Results from teh program.
+![views](./info/views.png)

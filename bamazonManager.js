@@ -92,7 +92,7 @@ async function changePrice(pmt) {
        let ans = await inquirer.prompt(pmt);
        let [rows,fields] = await conn.query("UPDATE products SET price = ? WHERE item_id = ?",
                                                             [ans.price, ans.id]);
-        console.log("Price chnaged to ${ans.price}");                                                    
+        console.log(`Price chnaged to ${ans.price}`);                                                    
     }  catch (err) {
         console.log("ERROR: fail to update price...") 
         console.log(err); 

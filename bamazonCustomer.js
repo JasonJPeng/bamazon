@@ -23,7 +23,7 @@ var conn;
 
 async function showProducts(arrProducts) {
   try {
-    let [rows,fields] = await conn.query("SELECT item_id, product_name, price FROM products");
+    let [rows,fields] = await conn.query("SELECT item_id, department_name, product_name, price FROM products ORDER BY department_name");
     // console.table(rows);
     console.log("\n\n\n")
     console.log(asTable(rows));

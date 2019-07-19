@@ -44,7 +44,7 @@ var mgrPromptsNew = [
 async function listAll(){
     try {
         // let conn = await mysql.createConnection(connectionParams);
-        let [rows,fields] = await conn.query("SELECT * FROM products");
+        let [rows,fields] = await conn.query("SELECT * FROM products ORDER BY department_name");
         // console.table(rows); 
         console.log("\n\n\n");
         console.log(asTable(rows));
@@ -59,7 +59,7 @@ async function listAll(){
 
 async function listLow(){
     try {
-        let [rows,fields] = await conn.query("SELECT * FROM products WHERE stock_quantity < 5");
+        let [rows,fields] = await conn.query("SELECT * FROM products WHERE stock_quantity < 5 ORDER BY department_name");
         if (rows.length === 0) {
             console.log("No products are in low inventory");
         } else {

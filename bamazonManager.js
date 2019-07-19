@@ -1,5 +1,9 @@
 const mysql = require('mysql2/promise');
 const inquirer = require('inquirer');
+const asTable = require ('as-table').configure({
+    "delimiter": ' | ',
+    "right": true
+  });
 
 const connectionParams = {
     host: "localhost",
@@ -41,7 +45,10 @@ async function listAll(){
     try {
         // let conn = await mysql.createConnection(connectionParams);
         let [rows,fields] = await conn.query("SELECT * FROM products");
-        console.table(rows); 
+        // console.table(rows); 
+        console.log("\n\n\n");
+        console.log(asTable(rows));
+        console.log("\n\n\n");
       //   console.log(rows);
         // conn.end();
       } catch (err) {
@@ -57,7 +64,10 @@ async function listLow(){
             console.log("No products are in low inventory");
         } else {
             console.log("Low inventory list");  
-            console.table(rows); 
+            // console.table(rows); 
+            console.log("\n\n\n");
+            console.log(asTable(rows));
+            console.log("\n\n\n");
         }
       } catch (err) {
         console.log("ERROR: Liost low inventory fails...")

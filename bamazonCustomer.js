@@ -1,5 +1,9 @@
 const mysql = require('mysql2/promise');
 const inquirer = require('inquirer');
+const asTable = require ('as-table').configure({
+  "delimiter": ' | ',
+  "right": true
+});
 
 const connectionParams = {
     host: "localhost",
@@ -9,7 +13,7 @@ const connectionParams = {
     database: "bamazon"
   };
 const arrPrompts = [
-  {message: "\n\nPlease eneter the product Id:  ", type: 'input', name: 'id'},
+  {message: "\n\nPurchasing a product: \nPlease eneter the product ID:  ", type: 'input', name: 'id'},
   {message: "Please enter the quantity:  ", type: 'input', name: 'num'}
 ];  
 
@@ -19,8 +23,11 @@ var conn;
 
 async function showProducts(arrProducts) {
   try {
-    let [rows,fields] = await conn.query("SELECT * FROM products");
-    console.table(rows);
+    let [rows,fields] = await conn.query("SELECT item_id, product_name, price FROM products");
+    // console.table(rows);
+    console.log("\n\n\n")
+    console.log(asTable(rows));
+    console.log("\n\n\n");
     let ans = await inquirer.prompt(arrPrompts)//.then(ans => {
       await updateProductNum(ans.id, ans.num);         
   //  })

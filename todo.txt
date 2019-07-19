@@ -1,20 +1,24 @@
-make a beautiful form for table
-CLI no interactive for client, manager, supervisor
-customer purchase need to update the product sales
-common library
+(asTable) make a beautiful form for table
+(no need) CLI no interactive for client, manager, supervisor
+
+(asTable) How to remove index column ?
+
+
+(Done) customer purchase need to update the product sales
+(Done) common library
    - showProduct 1) with inventory
                  2) no inventory 
                  3) update department name
 
-   - updateInventory - not close the database in manager
+ (Done)  - updateInventory - not close the database in manager
                      - purchase number  negative, message is wrong  
 
-Put askManager in each CRUD function
+(NO NEED) Put askManager in each CRUD function
 
-connect to database only once, close when "quit" is selected
+(DONE) connect to database only once, close when "quit" is selected
 
-bug. need to build department list otherwise you cannot use add new product as the first command.
-bug, How about department with no products 
+(DONE) bug. need to build department list otherwise you cannot use add new product as the first command.
+* bug, How about department with no products 
 
 
 

@@ -1,5 +1,9 @@
 const mysql = require('mysql2/promise');
 const inquirer = require('inquirer');
+const asTable = require ('as-table').configure({
+    "delimiter": ' | ',
+    "right": true
+  });
 
 const connectionParams = {
     host: "localhost",
@@ -64,7 +68,7 @@ async function changeOverheadCosts() {
     inquirer.prompt(promptsChange).then( async ans=> {
         try {
           let res = await conn.query(`UPDATE departments SET overhead_costs = overhead_costs + ${ans.cost} WHERE department_id = ${ans.id} `);
-        console.log(res);
+        // console.log(res);
         action(promptsAction);
         } catch (err) {
            console.log("Fail to change the overhaed costs"); 
@@ -79,7 +83,10 @@ async function action(pmt) {
         switch (ans.choice) {
             case arrChoices[0]: // vire profit
                 let [rows,fields] = await conn.query(strSqlProfit);
-                console.table(rows);
+                // console.table(rows);
+                console.log("\n\n\n");
+                console.log(asTable(rows));
+                console.log("\n\n\n");
                 await action(pmt);
                 break;
             case arrChoices[1]:  // Create a new department

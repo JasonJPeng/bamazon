@@ -43,7 +43,8 @@ This program has many interactive prompts and SQL function call. Carefully arran
 
 The following SQL is used to generate department based profit/loss table:
 
-````SELECT departments.department_id, departments.department_name, departments.overhead_costs, 
+````
+SELECT departments.department_id, departments.department_name, departments.overhead_costs, 
 SUM(products.product_sales) AS product_sales, 
 SUM(products.product_sales) - departments.overhead_costs AS total_profit FROM departments 
 JOIN products on departments.department_name = products.department_name

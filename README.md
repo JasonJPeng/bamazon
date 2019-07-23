@@ -41,7 +41,8 @@ This program has many interactive prompts and SQL function call. Carefully arran
 
 >> AS-Table Node module is used to format the search results
 
-The follwoing SQL is used to generate department based profit/loss table:
+The following SQL is used to generate department based profit/loss table:
+
 ````SELECT departments.department_id, departments.department_name, departments.overhead_costs, 
 SUM(products.product_sales) AS product_sales, 
 SUM(products.product_sales) - departments.overhead_costs AS total_profit FROM departments 
